@@ -1,5 +1,6 @@
 from tkintertable import TableCanvas, TableModel
 from tkinter import *
+from tkinter import ttk
 from collections import OrderedDict
 
 #lib que gera dados aleatórios remover quando tiver os dados do banco
@@ -25,11 +26,11 @@ def mostrar():
 
   buscaFrame.pack()
 
-  # Frame da tabela de estoque
-  estoqueFrame = Frame(mostrarWindow)
-  tabelaEstoque = TableCanvas(estoqueFrame, data=data)
+  # Frame da tabela de produto
+  produtosFrame = Frame(mostrarWindow)
+  tabelaEstoque = TableCanvas(produtosFrame, data=data)
   tabelaEstoque.show()
-  estoqueFrame.pack()
+  produtosFrame.pack()
 
   # Frame de actions
   actionsFrame = Frame(mostrarWindow)
@@ -48,31 +49,27 @@ def cadastrar():
   cadastrarForm = Frame(cadastrarWindow)
   codLabel = Label(cadastrarForm, text="Código do Produto")
   codInput = Entry(cadastrarForm)
-  qtdLabel = Label(cadastrarForm, text="Quantidade")
-  qtdInput = Entry(cadastrarForm)
-  dataEntradaLabel = Label(cadastrarForm, text="Data de entrada")
-  dataEntradaInput = Entry(cadastrarForm)
-  validadeLabel = Label(cadastrarForm, text="Validade")
-  validadeInput = Entry(cadastrarForm)
-  precoLabel = Label(cadastrarForm, text="Preço")
-  precoInput = Entry(cadastrarForm)
+  decricaoLabel = Label(cadastrarForm, text="Descrição")
+  decricaoInput = Entry(cadastrarForm)
+  linhaLabel = Label(cadastrarForm, text="Linha")
+  linhaInput = Entry(cadastrarForm)
+  marcaLabel = Label(cadastrarForm, text="Marca")
+  marcaInput = ttk.Combobox(cadastrarForm, values=['avon', 'natura', 'abelha rainha'])
 
   codLabel.grid(row=0, column=0)
   codInput.grid(row=0, column=1)
-  qtdLabel.grid(row=1, column=0)
-  qtdInput.grid(row=1, column=1)
-  dataEntradaLabel.grid(row=2, column=0)
-  dataEntradaInput.grid(row=2, column=1)
-  validadeLabel.grid(row=3, column=0)
-  validadeInput.grid(row=3, column=1)
-  precoLabel.grid(row=4, column=0)
-  precoInput.grid(row=4, column=1)
+  decricaoLabel.grid(row=1, column=0)
+  decricaoInput.grid(row=1, column=1)
+  linhaLabel.grid(row=2, column=0)
+  linhaInput.grid(row=2, column=1)
+  marcaLabel.grid(row=3, column=0)
+  marcaInput.grid(row=3, column=1)
 
   cadastrarForm.pack()
 
   # Frame de acoes do formulario
   def cadastrarProduto():
-    print(codInput.get())
+    print("batata")
   produtoEstoqueActions = Frame(cadastrarWindow)
   cadastrarProdutoBtn = Button(produtoEstoqueActions, text="Cadastar", command=cadastrarProduto)
 

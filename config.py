@@ -26,17 +26,32 @@ except mysql.connector.Error as err:
 
 cursor.close()
 
+def ultimoIDinserido(cursor,tabela,coluna):
+  ultimoID = cursor.execute('SELECT max({}) FROM {};'.format(coluna,tabela))
+  ultimoID = cursor.fetchall()
+
+  '''Como a query executada anteriormente retorna uma lista de tuplas(com apenas 1 tupla com 1 elemento),
+    pega-se o primeiro elemento da primeira tupla, que é o valor da coluna da tabela, passadas como parametros.
+    Caso a tabela esteja vazia, o valor da coluna será None'''
+  ultimoID=list(ultimoID[0]).pop()
+  if ultimoID == None:
+    ultimoID = 0
+
+  return (int(ultimoID)+1)
+
 def insereMarca(marca):
   '''
   Insere uma marca, passada como parametro, na database.
 
   Parametros:
-  marca -- dicionario contendo os valores da marca em questão ('Nome') >>Os valores sao case-sensitive<<
+  marca -- dicionario contendo os valores da marca em questão ('idMarca','Nome')
   '''
   global cnx
   cursor = cnx.cursor()
   try:
-    cursor.execute("INSERT INTO Marca(Nome) VALUES('{}')".format(marca['Nome']))
+    ID = ultimoIDinserido(cursor,"Marca","idMarca")
+
+    cursor.execute("INSERT INTO Marca VALUES({},'{}')".format(ID,marca['Nome']))
     cnx.commit()
     cursor.close()
   except mysql.connector.Error as err:
@@ -72,17 +87,15 @@ def insereCliente(cliente):
   Insere um cliente, passado como parametro, na database.
 
   Parametros:
-  cliente -- dicionario contendo os valores do cliente em questao('Nome','Telefone')
+  cliente -- dicionario contendo os valores do cliente em questao('idCliente','Nome','Telefone')
   '''
   global cnx
   cursor = cnx.cursor()
   try:
-    ultimoId = cursor.execute('SELECT idCliente FROM Cliente ORDER BY idCliente DESC LIMIT 1;')
-    print(ultimoId)
-    if ultimoId==None:
-      ultimoId=0
+    ID = ultimoIDinserido(cursor,"Cliente","idCliente")
+    
     cursor.execute("INSERT INTO Cliente VALUES ({},'{}','{}')"\
-                    .format(ultimoId+1,cliente['Nome'],cliente['Telefone']))
+    .format(ID,cliente['Nome'],cliente['Telefone']))
     cnx.commit()
     cursor.close()
   except mysql.connector.Error as err:
@@ -97,14 +110,16 @@ def insereEstoque(estoque):
   Insere um estoque, passado como parametro, na database.
 
   Parametros:
-  estoque -- dicionario contendo os valores do estoque em questao('Quantidade','Validade','Produto_codigo','Preco')
+  estoque -- dicionario contendo os valores do estoque em questao('idEstoque','Quantidade','Validade','Produto_codigo','Preco')
 
   '''
   global cnx
   cursor=cnx.cursor()
   try:
-    cursor.execute("INSERT INTO Estoque (Quantidade,Validade,Produto_codigo,Preco) VALUES ({},'{}',{},{})" \
-                    .format(estoque['Quantidade'],estoque['Validade'],estoque['Produto_codigo'],estoque['Preco']))
+    ID = ultimoIDinserido(cursor,"Estoque","idEstoque")
+
+    cursor.execute("INSERT INTO Estoque VALUES ({},{},'{}',{},{})" \
+    .format(ID,estoque['Quantidade'],estoque['Validade'],estoque['Produto_codigo'],estoque['Preco']))
   except:
     cursor.close()
     return(None)
@@ -135,12 +150,20 @@ def listarTudoTabela(tabela):
   Parametros:
   tabela -- A tabela que sera listada ('Marca' ou 'Produto ou 'Estoque' etc)
   '''
-  cursor = cnx.cursor()
+  cursor = cnx.cursor(dictionary=True)
   try:
     cursor.execute("SELECT * FROM {}".format(tabela))
     lista = cursor.fetchall()
     cursor.close()
     return(lista)
+  except:
+    return(None)
+
+def apagarLinhaTabela(ID,tabela,colunaID):
+  cursor = cnx.cursor()
+  try:
+    cursor.execute("DELETE FROM {} WHERE {}={}".format(tabela,colunaID,ID))
+    return(ID)
   except:
     return(None)
 

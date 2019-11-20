@@ -1,6 +1,8 @@
-from tkintertable import TableCanvas, TableModel
+from tkintertable import TableCanvas, TableModel, Filtering
 from tkinter import *
 from collections import OrderedDict
+from .Helpers import buscar
+# from CustomSearchBar import *
 
 #lib que gera dados aleatórios remover quando tiver os dados do banco
 from tkintertable.Testing import sampledata
@@ -27,7 +29,7 @@ def mostrar():
 
   # Frame da tabela de marca
   marcaFrame = Frame(mostrarWindow)
-  tabelaMarca = TableCanvas(marcaFrame, data=data)
+  tabelaMarca = TableCanvas(marcaFrame, data=data, read_only=TRUE)
   tabelaMarca.show()
   marcaFrame.pack()
 
@@ -65,3 +67,36 @@ def cadastrar():
 
 
   cadastrarWindow.mainloop()
+
+def selecionar():
+  # funcao que chama a janela de marca
+  mostrarWindow = Toplevel()
+
+  # Frame de busca
+  def buscarMarca():
+    buscar(tabelaMarca, "a", "8")
+  buscaFrame = Frame(mostrarWindow)
+  buscaInput = Entry(buscaFrame)
+  buscaBtn = Button(buscaFrame, text="Buscar", command=buscarMarca)
+  buscaInput.pack(side=LEFT)
+  buscaBtn.pack(side=LEFT)
+
+  buscaFrame.pack()
+
+  # Frame da tabela de marca
+  marcaFrame = Frame(mostrarWindow)
+  tabelaMarca = TableCanvas(marcaFrame, data=data, read_only=TRUE)
+  tabelaMarca.show()
+  marcaFrame.pack()
+
+  # Frame de actions
+  def retornarSelecionado():
+    print(tabelaMarca.getSelectedColumn())
+
+  actionsFrame = Frame(mostrarWindow)
+  cadastrarBtn = Button(actionsFrame, text="Escolher selecionado", command=tabelaMarca.showAll)
+
+  cadastrarBtn.pack(side=LEFT)
+  actionsFrame.pack()
+
+  mostrarWindow.mainloop()

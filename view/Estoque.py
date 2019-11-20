@@ -27,7 +27,7 @@ def mostrar():
 
   # Frame da tabela de estoque
   estoqueFrame = Frame(mostrarWindow)
-  tabelaEstoque = TableCanvas(estoqueFrame, data=data)
+  tabelaEstoque = TableCanvas(estoqueFrame, data=data, read_only=TRUE)
   tabelaEstoque.show()
   estoqueFrame.pack()
 

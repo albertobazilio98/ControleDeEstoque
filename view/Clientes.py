@@ -27,7 +27,7 @@ def mostrar():
 
   # Frame da tabela de cliente
   clienteFrame = Frame(mostrarWindow)
-  tabelaCliente = TableCanvas(clienteFrame, data=data)
+  tabelaCliente = TableCanvas(clienteFrame, data=data, read_only=TRUE)
   tabelaCliente.show()
   clienteFrame.pack()
 

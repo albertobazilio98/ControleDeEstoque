@@ -126,6 +126,25 @@ def insereEstoque(estoque):
   else:
     return(estoque)
 
+def insereVenda(venda):
+  '''
+  Insere uma venda, passada como parametro, na database
+
+  Parametros:
+  venda -- dicionario contendo os valores da venda em questao('idVenda','DataVenda','DataPagamento','Cliente_idCliente')
+  '''
+  cursor=cnx.cursor()
+  try:
+    ID = ultimoIDinserido(cursor,"Venda","idVenda")
+    cursor.execute("INSERT INTO Venda VALUES ({},'{}','{}',{})"\
+    .format(ID,venda['DataVenda'],venda['DataPagamento'],venda['Cliente_idCliente']))
+    cursor.close()
+  except:
+    cursor.close()
+    return(None)
+  else:
+    return(venda)
+
 def insereDescricaoVenda(descricaoVenda):
   '''
   Insere uma Descricao de venda, passada como parametro, na database.
@@ -157,13 +176,61 @@ def listarTudoTabela(tabela):
     cursor.close()
     return(lista)
   except:
+    cursor.close()
     return(None)
 
 def apagarLinhaTabela(ID,tabela,colunaID):
+  '''
+  Apaga uma linha de uma determinada tabela com determinado ID
+
+  Parametros:
+  ID -- chave primaria da linha a ser apagada
+  tabela -- tabela da qual a linha sera apagada
+  colunaID -- nome da coluna da chave primaria
+  '''
   cursor = cnx.cursor()
   try:
     cursor.execute("DELETE FROM {} WHERE {}={}".format(tabela,colunaID,ID))
+    cursor.close()
     return(ID)
   except:
+    cursor.close()
     return(None)
 
+def atualizarLinhaTabela(ID, objeto, tabela):
+  '''
+  Atualiza uma linha numa determinada tabela com determinado ID
+
+  Parametros:
+  ID -- Chave primária do objeto passado
+  objeto -- Objeto de uma determinada tabela('Produto','Cliente','Venda',etc)
+  tabela -- Nome da tabela a qual pertence o objeto
+  '''
+  cursor = cnx.cursor()
+
+  try:
+    if tabela=="Marca":
+      cursor.execute("UPDATE 'Marca' SET Nome='{}' WHERE idMarca={}"\
+      .format(objeto['Nome'],ID))
+
+    elif tabela=="Produto":
+      cursor.execute("UPDATE 'Produto' SET Descricao='{}',Linha='{}',Marca_idMarca='{}' WHERE codigo={}"\
+      .format(objeto['Descricao'],objeto['Linha'],objeto['Marca_idMarca'],ID))
+
+    elif tabela=="Cliente":
+      cursor.execute("UPDATE 'Cliente' SET Nome='{}',Telefone='{}' WHERE idCliente={}"\
+      .format(objeto['Nome'],objeto['Telefone'],ID))
+
+    elif tabela=="Estoque":
+      cursor.execute("UPDATE 'Estoque' SET Quantidade={},Validade='{}',Produto_codigo={},Preco={} WHERE idEstoque={}"\
+      .format(objeto['Quantidade'],objeto['Validade'],objeto['Produto_codigo'],objeto['Preco'],ID))
+
+    elif tabela=="Venda": #venda('idVenda','DataVenda','DataPagamento','Cliente_idCliente')
+      cursor.execute("UPDATE 'Venda' SET DataVenda='{}',DataPagamento='{}',Cliente_idCliente={} WHERE idVenda={}"\
+      .format(objeto['DataVenda'],objeto['DataPagamento'],objeto['Cliente_idCliente'],ID))
+
+    else:
+      return(-1)
+  except:
+    cursor.close()
+    return(None)

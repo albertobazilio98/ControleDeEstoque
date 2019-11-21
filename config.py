@@ -27,6 +27,13 @@ except mysql.connector.Error as err:
 cursor.close()
 
 def ultimoIDinserido(cursor,tabela):
+  '''
+  Função que retorna o proximo ID a ser inserido determinada numa tabela com PK auto_increment
+
+  Parametros:
+  cursor -- cursor da class mysql.connector
+  tabela -- nome da tabela da qual deseja-se pegar o ultimo ID inserido
+  '''
   ultimoID = cursor.execute('SELECT max(codigo) FROM {};'.format(tabela))
   ultimoID = cursor.fetchall()
 
@@ -44,7 +51,7 @@ def insereMarca(marca):
   Insere uma marca, passada como parametro, na database.
 
   Parametros:
-  marca -- dicionario contendo os valores da marca em questão ('idMarca','Nome')
+  marca -- dicionario contendo os valores da marca em questão ('codigo','Nome')
   '''
   global cnx
   cursor = cnx.cursor()
@@ -87,7 +94,7 @@ def insereCliente(cliente):
   Insere um cliente, passado como parametro, na database.
 
   Parametros:
-  cliente -- dicionario contendo os valores do cliente em questao('idCliente','Nome','Telefone')
+  cliente -- dicionario contendo os valores do cliente em questao('codigo','Nome','Telefone')
   '''
   global cnx
   cursor = cnx.cursor()
@@ -110,7 +117,7 @@ def insereEstoque(estoque):
   Insere um estoque, passado como parametro, na database.
 
   Parametros:
-  estoque -- dicionario contendo os valores do estoque em questao('idEstoque','Quantidade','Validade','Produto_codigo','Preco')
+  estoque -- dicionario contendo os valores do estoque em questao('codigo','Quantidade','Validade','Produto_codigo','Preco')
 
   '''
   global cnx
@@ -133,7 +140,7 @@ def insereVenda(venda):
   Insere uma venda, passada como parametro, na database
 
   Parametros:
-  venda -- dicionario contendo os valores da venda em questao('idVenda','DataVenda','DataPagamento','Cliente_idCliente')
+  venda -- dicionario contendo os valores da venda em questao('codigo','DataVenda','DataPagamento','Cliente_idCliente')
   '''
   cursor=cnx.cursor()
   try:
@@ -209,7 +216,7 @@ def apagarLinhaTabela(tabela,ID,ID2=None):
     cursor.close()
     return(None)
 
-def atualizarLinhaTabela(objeto, tabela):
+def atualizarLinhaTabela(tabela,objeto):
   '''
   Atualiza uma linha numa determinada tabela com determinado ID
 
@@ -221,35 +228,35 @@ def atualizarLinhaTabela(objeto, tabela):
 
   try:
     if tabela=="Marca":
-      cursor.execute("UPDATE 'Marca' SET Nome='{}' WHERE codigo={}"\
+      cursor.execute("UPDATE Marca SET Nome='{}' WHERE codigo={}"\
       .format(objeto['Nome'],objeto['codigo']))
       cnx.commit()
       cursor.close()
       return(objeto)
 
     elif tabela=="Produto":
-      cursor.execute("UPDATE 'Produto' SET Descricao='{}',Linha='{}',Marca_idMarca='{}' WHERE codigo={}"\
+      cursor.execute("UPDATE Produto SET Descricao='{}',Linha='{}',Marca_idMarca='{}' WHERE codigo={}"\
       .format(objeto['Descricao'],objeto['Linha'],objeto['Marca_idMarca'],objeto['codigo']))
       cnx.commit()
       cursor.close()
       return(objeto)
 
     elif tabela=="Cliente":
-      cursor.execute("UPDATE 'Cliente' SET Nome='{}',Telefone='{}' WHERE codigo={}"\
+      cursor.execute("UPDATE Cliente SET Nome='{}',Telefone='{}' WHERE codigo={}"\
       .format(objeto['Nome'],objeto['Telefone'],objeto['codigo']))
       cnx.commit()
       cursor.close()
       return(objeto)
 
     elif tabela=="Estoque":
-      cursor.execute("UPDATE 'Estoque' SET Quantidade={},Validade='{}',Produto_codigo={},Preco={} WHERE codigo={}"\
+      cursor.execute("UPDATE Estoque SET Quantidade={},Validade='{}',Produto_codigo={},Preco={} WHERE codigo={}"\
       .format(objeto['Quantidade'],objeto['Validade'],objeto['Produto_codigo'],objeto['Preco'],objeto['codigo']))
       cnx.commit()
       cursor.close()
       return(objeto)
 
     elif tabela=="Venda": #venda('codigo','DataVenda','DataPagamento','Cliente_idCliente')
-      cursor.execute("UPDATE 'Venda' SET DataVenda='{}',DataPagamento='{}',Cliente_idCliente={} WHERE codigoa={}"\
+      cursor.execute("UPDATE Venda SET DataVenda='{}',DataPagamento='{}',Cliente_idCliente={} WHERE codigoa={}"\
       .format(objeto['DataVenda'],objeto['DataPagamento'],objeto['Cliente_idCliente'],objeto['codigo']))
       cnx.commit()
       cursor.close()
@@ -263,6 +270,7 @@ def atualizarLinhaTabela(objeto, tabela):
       return(objeto)
     else:
       return(-1)
-  except:
+  except mysql.connector.Error as err:
+    print(err)
     cursor.close()
     return(None)

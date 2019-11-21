@@ -1,7 +1,8 @@
 from tkintertable import TableCanvas, TableModel, Filtering
 from tkinter import *
+from tkinter import ttk
 from collections import OrderedDict
-from .Helpers import buscar
+from .Helpers import criarBuscarFrame, criarDateSelectorFrame
 # from CustomSearchBar import *
 
 #lib que gera dados aleatórios remover quando tiver os dados do banco
@@ -14,22 +15,14 @@ data = sampledata()
 def mostrar():
   # funcao que chama a janela de marca
   mostrarWindow = Toplevel()
-
-  # Frame de busca
-  def buscar():
-    print("batata")
-  
-  buscaFrame = Frame(mostrarWindow)
-  buscaInput = Entry(buscaFrame)
-  buscaBtn = Button(buscaFrame, text="Buscar", command=buscar)
-  buscaInput.pack(side=LEFT)
-  buscaBtn.pack(side=LEFT)
-
-  buscaFrame.pack()
-
-  # Frame da tabela de marca
   marcaFrame = Frame(mostrarWindow)
   tabelaMarca = TableCanvas(marcaFrame, data=data, read_only=TRUE)
+
+  # Frame de busca
+  buscarFrame = criarBuscarFrame(mostrarWindow, tabelaMarca)
+  buscarFrame.pack()
+
+  # Frame da tabela de marca
   tabelaMarca.show()
   marcaFrame.pack()
 
@@ -70,33 +63,32 @@ def cadastrar():
 
 def selecionar():
   # funcao que chama a janela de marca
-  mostrarWindow = Toplevel()
+  selecionarWindow = Toplevel()
+  marcaFrame = Frame(selecionarWindow)
+  tabelaMarca = TableCanvas(marcaFrame, data=data, read_only=TRUE)
 
   # Frame de busca
-  def buscarMarca():
-    buscar(tabelaMarca, "a", "8")
-  buscaFrame = Frame(mostrarWindow)
-  buscaInput = Entry(buscaFrame)
-  buscaBtn = Button(buscaFrame, text="Buscar", command=buscarMarca)
-  buscaInput.pack(side=LEFT)
-  buscaBtn.pack(side=LEFT)
-
-  buscaFrame.pack()
-
+  buscarFrame = criarBuscarFrame(selecionarWindow, tabelaMarca)
+  buscarFrame.pack()
+  datePicker = criarDateSelectorFrame(selecionarWindow)
+  datePicker.pack()
   # Frame da tabela de marca
-  marcaFrame = Frame(mostrarWindow)
-  tabelaMarca = TableCanvas(marcaFrame, data=data, read_only=TRUE)
   tabelaMarca.show()
   marcaFrame.pack()
 
   # Frame de actions
   def retornarSelecionado():
-    print(tabelaMarca.getSelectedColumn())
+    print(datePicker.date)
+    selected = tabelaMarca.get_currentRecord()
+    selecionarWindow.destroy()
+    return selected
 
-  actionsFrame = Frame(mostrarWindow)
-  cadastrarBtn = Button(actionsFrame, text="Escolher selecionado", command=tabelaMarca.showAll)
+
+  actionsFrame = Frame(selecionarWindow)
+  cadastrarBtn = Button(actionsFrame, text="Escolher selecionado", command=retornarSelecionado) #tabelaMarca.showAll)
 
   cadastrarBtn.pack(side=LEFT)
   actionsFrame.pack()
 
-  mostrarWindow.mainloop()
+  selecionarWindow.mainloop()
+  return None

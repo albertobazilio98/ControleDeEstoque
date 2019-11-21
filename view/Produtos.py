@@ -8,7 +8,10 @@ from tkintertable.Testing import sampledata
 import random
 
 
-data = sampledata()
+batata = [{'a': 0.25, 'b': 0.26, 'c': 0.6, 'd': 0.88, 'e': 0.78},
+{'a': 0.11, 'b': 0.28, 'c': 0.44, 'd': 0.98, 'e': 0.97}]
+
+data = { i : batata[i] for i in range(0, len(batata) ) }
 
 def mostrar():
   # funcao que chama a janela de estoque
@@ -54,7 +57,7 @@ def cadastrar():
   linhaLabel = Label(cadastrarForm, text="Linha")
   linhaInput = Entry(cadastrarForm)
   marcaLabel = Label(cadastrarForm, text="Marca")
-  marcaInput = ttk.Combobox(cadastrarForm, values=['avon', 'natura', 'abelha rainha'])
+  marcaInput = ttk.Combobox(cadastrarForm, values=[ (I + 1) for I in range(31)])
 
   codLabel.grid(row=0, column=0)
   codInput.grid(row=0, column=1)

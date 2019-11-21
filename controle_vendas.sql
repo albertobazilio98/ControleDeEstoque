@@ -1,27 +1,23 @@
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-CREATE DATABASE IF NOT EXISTS `cv` DEFAULT CHARACTER SET utf8 ;
-USE `cv` ;
+CREATE DATABASE IF NOT EXISTS `ControleDeVendas` DEFAULT CHARACTER SET utf8 ;
+USE `ControleDeVendas`;
 
 -- -----------------------------------------------------
--- Table `cv`.`Marca`
+-- Table `ControleDeVendas`.`Marca`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `cv`.`Marca` ;
-
-CREATE TABLE IF NOT EXISTS `cv`.`Marca` (
-  `idMarca` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ControleDeVendas`.`Marca` (
+  `codigo` INT NOT NULL AUTO_INCREMENT,
   `Nome` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idMarca`))
+  PRIMARY KEY (`codigo`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `cv`.`Produto`
+-- Table `ControleDeVendas`.`Produto`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `cv`.`Produto` ;
-
-CREATE TABLE IF NOT EXISTS `cv`.`Produto` (
+CREATE TABLE IF NOT EXISTS `ControleDeVendas`.`Produto` (
   `codigo` INT NOT NULL,
   `Descricao` VARCHAR(60) NOT NULL,
   `Linha` VARCHAR(25) NOT NULL,
@@ -29,104 +25,90 @@ CREATE TABLE IF NOT EXISTS `cv`.`Produto` (
   PRIMARY KEY (`codigo`),
   CONSTRAINT `fk_Produto_Marca1`
     FOREIGN KEY (`Marca_idMarca`)
-    REFERENCES `cv`.`Marca` (`idMarca`)
+    REFERENCES `ControleDeVendas`.`Marca` (`codigo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_Produto_Marca1_idx` ON `cv`.`Produto` (`Marca_idMarca` ASC) VISIBLE;
+CREATE INDEX `fk_Produto_Marca1_idx` ON `ControleDeVendas`.`Produto` (`Marca_idMarca` ASC);
 
-CREATE UNIQUE INDEX `Descricao_UNIQUE` ON `cv`.`Produto` (`Descricao` ASC) VISIBLE;
-
-CREATE UNIQUE INDEX `codigo_UNIQUE` ON `cv`.`Produto` (`codigo` ASC) VISIBLE;
+CREATE UNIQUE INDEX `codigo_UNIQUE` ON `ControleDeVendas`.`Produto` (`codigo` ASC);
 
 
 -- -----------------------------------------------------
--- Table `cv`.`Cliente`
+-- Table `ControleDeVendas`.`Cliente`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `cv`.`Cliente` ;
-
-CREATE TABLE IF NOT EXISTS `cv`.`Cliente` (
-  `idCliente` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `ControleDeVendas`.`Cliente` (
+  `codigo` INT NOT NULL AUTO_INCREMENT,
   `Nome` VARCHAR(60) NULL,
   `Telefone` VARCHAR(45) NULL,
-  PRIMARY KEY (`idCliente`))
+  PRIMARY KEY (`codigo`))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `Nome_UNIQUE` ON `cv`.`Cliente` (`Nome` ASC) VISIBLE;
+CREATE UNIQUE INDEX `Nome_UNIQUE` ON `ControleDeVendas`.`Cliente` (`Nome` ASC);
 
 
 -- -----------------------------------------------------
--- Table `cv`.`Estoque`
+-- Table `ControleDeVendas`.`Estoque`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `cv`.`Estoque` ;
-
-CREATE TABLE IF NOT EXISTS `cv`.`Estoque` (
-  `idEstoque` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `ControleDeVendas`.`Estoque` (
+  `codigo` INT NOT NULL AUTO_INCREMENT,
   `Quantidade` INT NOT NULL DEFAULT 0,
   `Validade` DATE NULL,
   `Produto_codigo` INT NOT NULL,
   `Preco` DECIMAL(2) NULL,
-  PRIMARY KEY (`idEstoque`),
+  PRIMARY KEY (`codigo`),
   CONSTRAINT `fk_Estoque_Produto`
     FOREIGN KEY (`Produto_codigo`)
-    REFERENCES `cv`.`Produto` (`codigo`)
+    REFERENCES `ControleDeVendas`.`Produto` (`codigo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_Estoque_Produto_idx` ON `cv`.`Estoque` (`Produto_codigo` ASC) VISIBLE;
+CREATE INDEX `fk_Estoque_Produto_idx` ON `ControleDeVendas`.`Estoque` (`Produto_codigo` ASC);
 
-CREATE UNIQUE INDEX `idEstoque_UNIQUE` ON `cv`.`Estoque` (`idEstoque` ASC) VISIBLE;
-
+CREATE UNIQUE INDEX `codigo_UNIQUE` ON `ControleDeVendas`.`Estoque` (`codigo` ASC);
 
 -- -----------------------------------------------------
--- Table `cv`.`Venda`
+-- Table `ControleDeVendas`.`Venda`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `cv`.`Venda` ;
-
-CREATE TABLE IF NOT EXISTS `cv`.`Venda` (
-  `idVenda` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ControleDeVendas`.`Venda` (
+  `codigo` INT NOT NULL AUTO_INCREMENT,
   `DataVenda` DATE NULL,
   `DataPagamento` DATE NULL,
   `Cliente_idCliente` INT NOT NULL,
-  PRIMARY KEY (`idVenda`),
+  PRIMARY KEY (`codigo`),
   CONSTRAINT `fk_Venda_Cliente1`
     FOREIGN KEY (`Cliente_idCliente`)
-    REFERENCES `cv`.`Cliente` (`idCliente`)
+    REFERENCES `ControleDeVendas`.`Cliente` (`codigo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_Venda_Cliente1_idx` ON `cv`.`Venda` (`Cliente_idCliente` ASC) VISIBLE;
-
-
+CREATE INDEX `fk_Venda_Cliente1_idx` ON `ControleDeVendas`.`Venda` (`Cliente_idCliente` ASC);
 -- -----------------------------------------------------
--- Table `cv`.`DescricaoVenda`
+-- Table `ControleDeVendas`.`DescricaoVenda`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `cv`.`DescricaoVenda` ;
-
-CREATE TABLE IF NOT EXISTS `cv`.`DescricaoVenda` (
+CREATE TABLE IF NOT EXISTS `ControleDeVendas`.`DescricaoVenda` (
   `Estoque_idEstoque` INT NOT NULL,
   `Venda_idVenda` INT NOT NULL,
   `quantidadeProduto` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Estoque_idEstoque`, `Venda_idVenda`),
   CONSTRAINT `fk_Estoque_has_Venda_Estoque1`
     FOREIGN KEY (`Estoque_idEstoque`)
-    REFERENCES `cv`.`Estoque` (`idEstoque`)
+    REFERENCES `ControleDeVendas`.`Estoque` (`codigo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Estoque_has_Venda_Venda1`
     FOREIGN KEY (`Venda_idVenda`)
-    REFERENCES `cv`.`Venda` (`idVenda`)
+    REFERENCES `ControleDeVendas`.`Venda` (`codigo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_Estoque_has_Venda_Venda1_idx` ON `cv`.`DescricaoVenda` (`Venda_idVenda` ASC) VISIBLE;
+CREATE INDEX `fk_Estoque_has_Venda_Venda1_idx` ON `ControleDeVendas`.`DescricaoVenda` (`Venda_idVenda` ASC);
 
-CREATE INDEX `fk_Estoque_has_Venda_Estoque1_idx` ON `cv`.`DescricaoVenda` (`Estoque_idEstoque` ASC) VISIBLE;
-
+CREATE INDEX `fk_Estoque_has_Venda_Estoque1_idx` ON `ControleDeVendas`.`DescricaoVenda` (`Estoque_idEstoque` ASC);
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

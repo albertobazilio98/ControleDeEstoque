@@ -96,12 +96,12 @@ CREATE TABLE IF NOT EXISTS `ControleDeVendas`.`DescricaoVenda` (
   PRIMARY KEY (`Estoque_idEstoque`, `Venda_idVenda`),
   CONSTRAINT `fk_Estoque_has_Venda_Estoque1`
     FOREIGN KEY (`Estoque_idEstoque`)
-    REFERENCES `ControleDeVendas`.`Estoque` (`idEstoque`)
+    REFERENCES `ControleDeVendas`.`Estoque` (`codigo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Estoque_has_Venda_Venda1`
     FOREIGN KEY (`Venda_idVenda`)
-    REFERENCES `ControleDeVendas`.`Venda` (`idVenda`)
+    REFERENCES `ControleDeVendas`.`Venda` (`codigo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

@@ -26,7 +26,7 @@ def criarBuscarFrame(parent, table):
 
 def criarDateSelectorFrame(parent):
   def getDate():
-    dateSelectorFrame.date = "{}-{}-{}".format(diaSelector.get(),mesSelector.get(),anoSelector.get())
+    dateSelectorFrame.date = "{}-{}-{}".format(anoSelector.get(),mesSelector.get(),diaSelector.get())
   dateSelectorFrame = Frame(parent)
   diaSelector = ttk.Combobox(dateSelectorFrame, values = [(I + 1) for I in range(31)])
   mesSelector = ttk.Combobox(dateSelectorFrame, values = [(I + 1) for I in range(12)])
@@ -41,7 +41,7 @@ def criarDateSelectorFrame(parent):
 
 def criarValidadeSelectorFrame(parent):
   def getDate():
-    dateSelectorFrame.date = "1-{}-{}".format(mesSelector.get(),anoSelector.get())
+    dateSelectorFrame.date = "{}-{}-1".format(anoSelector.get(),mesSelector.get())
   dateSelectorFrame = Frame(parent)
   mesSelector = ttk.Combobox(dateSelectorFrame, values = [(I + 1) for I in range(12)])
   anoSelector = ttk.Combobox(dateSelectorFrame, values = [(I + 2019) for I in range(10)])

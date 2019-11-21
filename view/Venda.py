@@ -1,13 +1,11 @@
+from tkintertable import TableCanvas, TableModel
 from tkinter import *
+from tkinter import ttk
+from collections import OrderedDict
+
 
 def criar():
   criarWindow = Toplevel()
-
-  clienteSelectFrame = Frame(criarWindow)
-  clienteSearchBtn = Button(clienteSelectFrame, text="Buscar Cliente")
-  clienteSearchInput = Entry(clienteSelectFrame)
-
-  clienteSearchInput.pack()
-  clienteSelectFrame.pack()
-
+  
+  
   criarWindow.mainloop()

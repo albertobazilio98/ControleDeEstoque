@@ -16,5 +16,5 @@ sudo pip3 install tkintertable -qq
 echo "Installing MySQL-Connector..."
 sudo pip3 install mysql-connector -qq
 
-sudo mysql -u root -p < db.sql
+sudo mysql -u root -p < controle_vendas.sql
 sudo mysql -u root -p 

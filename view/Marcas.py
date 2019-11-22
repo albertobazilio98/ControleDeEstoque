@@ -3,16 +3,29 @@ from tkinter import *
 from tkinter import ttk
 from collections import OrderedDict
 from .Helpers import criarBuscarFrame, criarDateSelectorFrame
+from . import config as db
 
 #lib que gera dados aleatórios remover quando tiver os dados do banco
 from tkintertable.Testing import sampledata
 import random
 
+tableName = "Marca"
 
-data = sampledata()
+def getTable():
+  table = db.listarTudoTabela(tableName)
+  if table == []:
+    data = { 1: {"codigo": "", "Nome": ""} }
+  else:
+    data = { i : table[i] for i in range(0, len(table) ) }
+  return data
+
+def updateTable(tabela):
+  tabela.model.importDict(getTable())
+  tabela.redraw()
 
 def mostrar():
   # funcao que chama a janela de marca
+  data = getTable()
   mostrarWindow = Toplevel()
   marcaFrame = Frame(mostrarWindow)
   tabelaMarca = TableCanvas(marcaFrame, data=data, read_only=TRUE)
@@ -27,16 +40,18 @@ def mostrar():
 
   # Frame de actions
   def cadastarMarca():
-    cadastrar()
+    print(selecionar())
+    cadastrar(tabelaMarca)
 
   def deletarMarca():
-    selected = tabelaMarca.get_currentRecord()["a"]
-    print(selected)
+    selected = tabelaMarca.get_currentRecord()["codigo"]
+    db.apagarLinhaTabela(tableName, selected)
+    updateTable(tabelaMarca)
 
   def editarMarca():
     selected = tabelaMarca.get_currentRecord()
-    print(selected["a"])
-    editar(selected)
+    print(selected["codigo"])
+    editar(selected, tabelaMarca)
   
   actionsFrame = Frame(mostrarWindow)
   cadastrarBtn = Button(actionsFrame, text="Cadastrar Novo", command=cadastarMarca)
@@ -50,8 +65,8 @@ def mostrar():
 
   mostrarWindow.mainloop()
 
-def cadastrar():
-  # Funcao que chama janela de cadastar novo produto
+def cadastrar(tabela):
+  # Funcao que cria janela de cadastar novo produto
   cadastrarWindow = Toplevel()
 
   # Frame do formulario de produto
@@ -65,17 +80,22 @@ def cadastrar():
 
   # Frame de acoes do formulario
   def cadastrarMarca():
-    print(nomeInput.get())
+    insertData = {"Nome": nomeInput.get()}
+    ret = db.insereMarca(insertData)
+    print(ret)
+    cadastrarWindow.quit()
+    cadastrarWindow.destroy()
+    updateTable(tabela)
+    return ret
 
   marcaActionsFrame = Frame(cadastrarWindow)
   cadastrarMarcaBtn = Button(marcaActionsFrame, text="Cadastar", command=cadastrarMarca)
   cadastrarMarcaBtn.pack(side=LEFT)
   marcaActionsFrame.pack()
 
-
   cadastrarWindow.mainloop()
 
-def editar(data):
+def editar(data, tabela):
   # Funcao que chama janela de cadastar novo produto
   editarWindow = Toplevel()
 
@@ -83,7 +103,7 @@ def editar(data):
   editarForm = Frame(editarWindow)
   nomeLabel = Label(editarForm, text="Nome da Marca")
   nomeInput = Entry(editarForm)
-  nomeInput.insert(0, data["a"])
+  nomeInput.insert(0, data["Nome"])
   nomeLabel.grid(row=0, column=0)
   nomeInput.grid(row=0, column=1)
 
@@ -91,10 +111,14 @@ def editar(data):
 
   # Frame de acoes do formulario
   def editarMarca():
-    print(nomeInput.get())
+    data["Nome"] = nomeInput.get()
+    db.atualizarLinhaTabela(tableName, data)
+    editarWindow.quit()
+    editarWindow.destroy()
+    updateTable(tabela)
 
   marcaActionsFrame = Frame(editarWindow)
-  editarMarcaBtn = Button(marcaActionsFrame, text="Cadastar", command=editarMarca)
+  editarMarcaBtn = Button(marcaActionsFrame, text="Atualizar", command=editarMarca)
   editarMarcaBtn.pack(side=LEFT)
   marcaActionsFrame.pack()
 
@@ -104,6 +128,8 @@ def editar(data):
 
 def selecionar():
   # funcao que chama a janela de marca
+  selected = {}
+  data = getTable()
   selecionarWindow = Toplevel()
   marcaFrame = Frame(selecionarWindow)
   tabelaMarca = TableCanvas(marcaFrame, data=data, read_only=TRUE)
@@ -118,10 +144,10 @@ def selecionar():
 
   # Frame de actions
   def retornarSelecionado():
+    global selected
     selected = tabelaMarca.get_currentRecord()
+    selecionarWindow.quit()
     selecionarWindow.destroy()
-    return selected
-
 
   actionsFrame = Frame(selecionarWindow)
   cadastrarBtn = Button(actionsFrame, text="Escolher selecionado", command=retornarSelecionado) #tabelaMarca.showAll)
@@ -130,4 +156,4 @@ def selecionar():
   actionsFrame.pack()
 
   selecionarWindow.mainloop()
-  return None
+  return selected

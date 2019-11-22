@@ -17,4 +17,3 @@ echo "Installing MySQL-Connector..."
 sudo pip3 install mysql-connector -qq
 
 sudo mysql -u root -p < controle_vendas.sql
-sudo mysql -u root -p 

@@ -10,6 +10,7 @@ from tkintertable.Testing import sampledata
 import random
 
 tableName = "Marca"
+selected = {}
 
 def getTable():
   table = db.listarTudoTabela(tableName)
@@ -40,7 +41,6 @@ def mostrar():
 
   # Frame de actions
   def cadastarMarca():
-    print(selecionar())
     cadastrar(tabelaMarca)
 
   def deletarMarca():
@@ -128,7 +128,6 @@ def editar(data, tabela):
 
 def selecionar():
   # funcao que chama a janela de marca
-  selected = {}
   data = getTable()
   selecionarWindow = Toplevel()
   marcaFrame = Frame(selecionarWindow)
@@ -143,6 +142,9 @@ def selecionar():
   marcaFrame.pack()
 
   # Frame de actions
+  def cadastarMarca():
+    cadastrar(tabelaMarca)
+
   def retornarSelecionado():
     global selected
     selected = tabelaMarca.get_currentRecord()
@@ -150,8 +152,10 @@ def selecionar():
     selecionarWindow.destroy()
 
   actionsFrame = Frame(selecionarWindow)
-  cadastrarBtn = Button(actionsFrame, text="Escolher selecionado", command=retornarSelecionado) #tabelaMarca.showAll)
+  selecionarBtn = Button(actionsFrame, text="Escolher selecionado", command=retornarSelecionado) #tabelaMarca.showAll)
+  cadastrarBtn = Button(actionsFrame, text="Nova marca", command=cadastarMarca)
 
+  selecionarBtn.pack(side=LEFT)
   cadastrarBtn.pack(side=LEFT)
   actionsFrame.pack()
 

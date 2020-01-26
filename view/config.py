@@ -129,7 +129,9 @@ def insereEstoque(estoque):
     .format(ID,estoque['Quantidade'],estoque['Validade'],estoque['Produto_codigo'],estoque['Preco']))
     cnx.commit()
     cursor.close()
-  except:
+  except Exception as e:
+    print("batata")
+    print(e)
     cursor.close()
     return(None)
   else:
@@ -190,6 +192,40 @@ def listarTudoTabela(tabela):
   except:
     cursor.close()
     return(None)
+
+def listarTudoEstoque():
+  cursor = cnx.cursor(dictionary=True)
+  try:
+    cursor.execute("SELECT * FROM (Estoque JOIN Produto) JOIN Marca")
+    lista = cursor.fetchall()
+    cursor.close()
+    return(lista)
+  except:
+    cursor.close()
+    return(None)
+
+def selecionarLinha(tabela, codigo):
+  print(codigo)
+  cursor = cnx.cursor(dictionary=True)
+  try:
+    cursor.execute("SELECT * FROM {} WHERE codigo={}".format(tabela, codigo))
+    linha = cursor.fetchone()
+    cursor.close()
+    return(linha)
+  except:
+    cursor.close()
+    return(None)
+
+def doQuerry(tabela, coluna, dado):
+  cursor = cnx.cursor(dictionary=True)
+  try:
+    cursor.execute("SELECT * FROM {} WHERE {}=\'{}\'".format(tabela, coluna, dado))
+    linha = cursor.fetchone()
+    cursor.close()
+    return(linha)
+  except Exception as e:
+    print(e)
+    return None
 
 def apagarLinhaTabela(tabela,ID,ID2=None):
   '''

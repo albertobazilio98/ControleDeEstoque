@@ -1,6 +1,7 @@
 from tkintertable import TableCanvas, TableModel, Filtering
 from tkinter import *
 from tkinter import ttk
+import datetime
 from collections import OrderedDict
 
 def filtro(table, column, value):
@@ -51,3 +52,25 @@ def criarValidadeSelectorFrame(parent):
   selectBtn.pack(side=LEFT)
 
   return dateSelectorFrame
+
+# parsers e formaters
+
+def formatedMoney(money):
+  return ("R$ " + str(money)).replace('.',',')
+
+def formatedDate(date):
+  return '/'.join((str(date).split('-'))[::-1])
+
+def formatedExpirationDate(date):
+  return formatedDate(date)[3:]
+
+def moneyParser(money):
+  return money.replace(',', '.')
+
+def dateParser(date):
+  date = date.split('/')
+  date[-1] = "20" + date[-1]
+  return '-'.join(date[::-1])
+
+def expirationDateParser(date):
+  return dateParser("01/" + date)

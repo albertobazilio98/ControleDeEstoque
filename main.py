@@ -12,10 +12,17 @@ import view.Marcas as marcas
 # teste, remover dps
 data = {'a': '0.25', 'b': "0.26", 'c': 0.6, 'd': 0.88, 'e': 0.78}
 data = str(data)
+
 main = Tk()
 
-table = db.listarTudoTabela("Produto")
-print(table)
+table = db.listarTudoTabela("Marca")
+# data = { i : table[i] for i in range(0, len(table) ) }
+# data = {}
+# for i in range(0, len(table) ):
+#   data[i] = table[i]
+#   print (i)
+#   data[i]['Nome'] = "batata"
+# print(data)
 
 mostrarEstoqueBtn = Button(main, text="Mostrar Estoque", command=estoque.mostrar)
 mostrarProdutosBtn = Button(main, text="Mostrar Produtos", command=produtos.mostrar)

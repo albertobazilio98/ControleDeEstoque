@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `ControleDeVendas`.`Estoque` (
   `Quantidade` INT NOT NULL DEFAULT 0,
   `Validade` DATE NULL,
   `Produto_codigo` INT NOT NULL,
-  `Preco` DECIMAL(2) NULL,
+  `Preco` DECIMAL(15,2) NULL,
   PRIMARY KEY (`codigo`),
   CONSTRAINT `fk_Estoque_Produto`
     FOREIGN KEY (`Produto_codigo`)
